@@ -96,7 +96,14 @@ private static final int PORT = 12345;
                     countdownTimer.stop();
                 }
                 String[] parts = message.split("@", 6);
-                txtquestion.setText(parts[1]);
+                int numLines = 10; // Tổng số dòng hiển thị (tính bằng kích thước JTextArea)
+String content = "Nội dung cần hiển thị";
+String padding = "\n".repeat((numLines / 2) - 1); // Tạo khoảng trắng phía trên
+txtquestion.setText(padding + content);
+//                txtquestion.setLineWrap(true); // Tự động xuống dòng
+//                txtquestion.setWrapStyleWord(true); // Xuống dòng theo từ
+//                txtquestion.setEditable(false); // Chỉ hiển thị, không cho chỉnh sửa
+//                txtquestion.setText(parts[1]); // Gán nội dung
                 System.out.println(parts[1]);
                 System.out.println(parts[2]);
                 System.out.println(parts[3]);
@@ -127,6 +134,10 @@ private static final int PORT = 12345;
                 }
             } else if (message.startsWith("DONE")) {
                 countdownTimer.stop();
+                btnA.setEnabled(false);
+                btnB.setEnabled(false);
+                btnC.setEnabled(false);
+                btnD.setEnabled(false);
                 // gửi thông báo cho server đã hoàn thành vòng
                  sendToServer("DONE@" + this.playerName);
                 JOptionPane.showMessageDialog(this, "Chúc mừng " + playerName + " đã hoàn thành vòng thi, hãy đợi các người chơi khác hoàn thành!!!");
@@ -188,7 +199,8 @@ private static final int PORT = 12345;
         jPanel2 = new javax.swing.JPanel();
         txtname = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        txtquestion = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtquestion = new javax.swing.JTextArea();
         txttime = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -306,20 +318,23 @@ private static final int PORT = 12345;
 
         jPanel6.setBackground(new java.awt.Color(184, 250, 250));
 
-        txtquestion.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        txtquestion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtquestion.setText("Câu hỏi");
-        txtquestion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 4));
+        txtquestion.setBackground(new java.awt.Color(184, 250, 250));
+        txtquestion.setColumns(20);
+        txtquestion.setFont(new java.awt.Font("DejaVu Serif", 1, 14)); // NOI18N
+        txtquestion.setLineWrap(true);
+        txtquestion.setRows(5);
+        txtquestion.setText("asdasfadf");
+        jScrollPane1.setViewportView(txtquestion);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtquestion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtquestion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
         );
 
         txttime.setBackground(new java.awt.Color(153, 255, 255));
@@ -335,7 +350,7 @@ private static final int PORT = 12345;
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -420,13 +435,13 @@ private static final int PORT = 12345;
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnC, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnA, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnD, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -557,13 +572,14 @@ private static final int PORT = 12345;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel txtScorePlayer;
     private javax.swing.JLabel txtname;
     private javax.swing.JTextField txtnameuser;
     private javax.swing.JLabel txtnextround;
-    private javax.swing.JLabel txtquestion;
+    private javax.swing.JTextArea txtquestion;
     private javax.swing.JLabel txtscore;
     private javax.swing.JLabel txttime;
     // End of variables declaration//GEN-END:variables

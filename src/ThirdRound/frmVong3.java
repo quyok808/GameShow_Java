@@ -23,7 +23,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Le Cuong
+ * PHAN VU BANG
  */
 public class frmVong3 extends javax.swing.JFrame {
 
@@ -41,7 +41,7 @@ public class frmVong3 extends javax.swing.JFrame {
      */
     public frmVong3() {
         initComponents();
-
+        lb_HinhANh.setIcon(ResizeImage(String.valueOf("../test2/src/RoundQuestions/ThirdRound/q6.jpg")));
     }
 
     public frmVong3(String playerName) {
@@ -137,6 +137,8 @@ public class frmVong3 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Giải thích: " + explanation, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else if (message.startsWith("DONE")) {
                 countdownTimer.stop();
+                btn_Submit.setEnabled(false);
+                txt_TraLoi.setEditable(false);
                 // gửi thông báo cho server đã hoàn thành vòng
                  sendToServer("DONE@" + this.playerName);
                 JOptionPane.showMessageDialog(this, "Chúc mừng " + playerName + " đã hoàn thành vòng thi, hãy đợi các người chơi khác hoàn thành!!!");

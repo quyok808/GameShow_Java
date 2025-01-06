@@ -50,7 +50,7 @@ public class frmVong4 extends javax.swing.JFrame {
     public frmVong4(String goiCauHoi, String playerName) {
         initComponents();
         try {
-            this.socket = new Socket("localhost", 12345);
+            this.socket = new Socket(HOST, PORT);
             this.playerName = playerName;
             connectToServer();
         } catch (IOException ex) {
@@ -68,7 +68,7 @@ public class frmVong4 extends javax.swing.JFrame {
     public frmVong4(String goiCauHoi) {
         initComponents();
         try {
-            this.socket = new Socket("localhost", 12345);
+            this.socket = new Socket(HOST, PORT);
 
         } catch (IOException ex) {
             try {
@@ -150,6 +150,9 @@ public class frmVong4 extends javax.swing.JFrame {
             } else if (message.startsWith("DONE")) {
                 countdownTimer.stop();
                 // gửi thông báo cho server đã hoàn thành vòng
+                btn_Next.setEnabled(false);
+                btn_Submit.setEnabled(false);
+                txt_TraLoi.setEditable(false);
                 sendToServer("DONE@" + this.playerName);
                 JOptionPane.showMessageDialog(this, "Chúc mừng " + playerName + " đã hoàn thành vòng thi, hãy đợi các người chơi khác hoàn thành!!!");
 

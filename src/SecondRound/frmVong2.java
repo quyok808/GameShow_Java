@@ -21,6 +21,8 @@ import javax.swing.Timer;
  */
 public class frmVong2 extends javax.swing.JFrame {
 
+    private static final int PORT = 12345;
+    private static final String HOST = "25.33.107.197";
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -36,7 +38,7 @@ public class frmVong2 extends javax.swing.JFrame {
     public frmVong2(String playerName) {
         initComponents();
         try {
-            this.socket = new Socket("localhost", 12345);
+            this.socket = new Socket(HOST, PORT);
 
         } catch (IOException ex) {
             try {
@@ -94,7 +96,11 @@ public class frmVong2 extends javax.swing.JFrame {
                     countdownTimer.stop();
                 }
                 String[] parts = message.split("@", 6);
-                txtquestion.setText(parts[1]);
+
+               txtquestion.setLineWrap(true); // Tự động xuống dòng
+                txtquestion.setWrapStyleWord(true); // Xuống dòng theo từ
+                txtquestion.setEditable(false); // Chỉ hiển thị, không cho chỉnh sửa
+                txtquestion.setText(parts[1]); // Gán nội dung
                 System.out.println(parts[1]);
                 System.out.println(parts[2]);
                 System.out.println(parts[3]);
@@ -133,11 +139,14 @@ public class frmVong2 extends javax.swing.JFrame {
             } else if (message.startsWith("DONE")) {
                 countdownTimer.stop();
                 // gửi thông báo cho server đã hoàn thành vòng
-                 sendToServer("DONE@" + this.playerName);
+                btnA.setEnabled(false);
+                btnB.setEnabled(false);
+                btnC.setEnabled(false);
+                btnD.setEnabled(false);
+                sendToServer("DONE@" + this.playerName);
                 JOptionPane.showMessageDialog(this, "Chúc mừng " + playerName + " đã hoàn thành vòng thi, hãy đợi các người chơi khác hoàn thành!!!");
-                
-            }else if(message.startsWith("NEXTROUND"))
-             {
+
+            } else if (message.startsWith("NEXTROUND")) {
                 frmRank obj = new frmRank(this.playerName, "frmVong3");
                 obj.setVisible(true);
                 this.dispose();
@@ -193,7 +202,8 @@ public class frmVong2 extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         txtname = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        txtquestion = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtquestion = new javax.swing.JTextArea();
         txttime = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -310,20 +320,22 @@ public class frmVong2 extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(184, 250, 250));
 
-        txtquestion.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        txtquestion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtquestion.setText("Câu hỏi");
-        txtquestion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 4));
+        txtquestion.setEditable(false);
+        txtquestion.setBackground(new java.awt.Color(184, 250, 250));
+        txtquestion.setColumns(20);
+        txtquestion.setFont(new java.awt.Font("DejaVu Serif", 1, 14)); // NOI18N
+        txtquestion.setRows(5);
+        jScrollPane1.setViewportView(txtquestion);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtquestion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtquestion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
         );
 
         txttime.setBackground(new java.awt.Color(153, 255, 255));
@@ -337,7 +349,7 @@ public class frmVong2 extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 435, Short.MAX_VALUE)
                 .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -347,7 +359,7 @@ public class frmVong2 extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(19, 19, 19)
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -551,13 +563,14 @@ public class frmVong2 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel txtScorePlayer;
     private javax.swing.JLabel txtname;
     private javax.swing.JTextField txtnameuser;
     private javax.swing.JLabel txtnextround;
-    private javax.swing.JLabel txtquestion;
+    private javax.swing.JTextArea txtquestion;
     private javax.swing.JLabel txtscore;
     private javax.swing.JLabel txttime;
     // End of variables declaration//GEN-END:variables

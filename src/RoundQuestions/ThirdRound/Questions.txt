@@ -1,2 +1,7 @@
 ../test2/src/RoundQuestions/ThirdRound/q1.jpg|Đây là gì ?|Kiến thức
 ../test2/src/RoundQuestions/ThirdRound/q2.jpg|Đây là thành ngữ gì ?|Lên voi xuống chó
+../test2/src/RoundQuestions/ThirdRound/q3.jpg|Đây là gì ?|Đục nước béo cò
+../test2/src/RoundQuestions/ThirdRound/q4.jpg|Đây là gì ?|Tiền trảm hậu tấu
+../test2/src/RoundQuestions/ThirdRound/q6.jpg|Đây là gì ?|Đủ lông đủ cánh
+
+

@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
  * 2180609157 NGUYEN THI HONG VI
  */
 public class frmtrangchu extends javax.swing.JFrame {
+
     private static final int PORT = 12345;
     private static final String HOST = "25.33.107.197";
     private String playerName;
@@ -82,6 +83,15 @@ public class frmtrangchu extends javax.swing.JFrame {
                 lb_Top2.setText(parts.length > 2 ? parts[2] : defaultText);
                 lb_Top3.setText(parts.length > 3 ? parts[3] : defaultText);
                 lb_Top4.setText(parts.length > 4 ? parts[4] : defaultText);
+            } else if (message.startsWith("DIEM")) {
+                String[] parts = message.split("@");
+                String defaultText = "O"; // Giá trị mặc định nếu thiếu người
+
+                // Xếp từ trên xuống với dữ liệu có sẵn
+                b1.setText(parts.length > 1 ? parts[1] : defaultText);
+                b2.setText(parts.length > 2 ? parts[2] : defaultText);
+                b3.setText(parts.length > 3 ? parts[3] : defaultText);
+                b4.setText(parts.length > 4 ? parts[4] : defaultText);
             }
 
         });
@@ -115,10 +125,10 @@ public class frmtrangchu extends javax.swing.JFrame {
         btn_startgame = new javax.swing.JButton();
         bangxephang = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        b1 = new javax.swing.JLabel();
+        b4 = new javax.swing.JLabel();
+        b2 = new javax.swing.JLabel();
+        b3 = new javax.swing.JLabel();
         lb_Top1 = new javax.swing.JLabel();
         lb_Top2 = new javax.swing.JLabel();
         lb_Top3 = new javax.swing.JLabel();
@@ -147,31 +157,31 @@ public class frmtrangchu extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("BẢNG XẾP HẠNG");
 
-        jLabel2.setBackground(new java.awt.Color(255, 51, 51));
-        jLabel2.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("1");
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel2.setOpaque(true);
+        b1.setBackground(new java.awt.Color(255, 51, 51));
+        b1.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
+        b1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        b1.setText("1");
+        b1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        b1.setOpaque(true);
 
-        jLabel3.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("4");
-        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        b4.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
+        b4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        b4.setText("4");
+        b4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel4.setBackground(new java.awt.Color(51, 255, 51));
-        jLabel4.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("2");
-        jLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel4.setOpaque(true);
+        b2.setBackground(new java.awt.Color(51, 255, 51));
+        b2.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
+        b2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        b2.setText("2");
+        b2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        b2.setOpaque(true);
 
-        jLabel5.setBackground(new java.awt.Color(255, 255, 51));
-        jLabel5.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("3");
-        jLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel5.setOpaque(true);
+        b3.setBackground(new java.awt.Color(255, 255, 51));
+        b3.setFont(new java.awt.Font("DejaVu Serif", 1, 36)); // NOI18N
+        b3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        b3.setText("3");
+        b3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        b3.setOpaque(true);
 
         lb_Top1.setFont(new java.awt.Font("DejaVu Serif", 3, 14)); // NOI18N
         lb_Top1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -194,41 +204,39 @@ public class frmtrangchu extends javax.swing.JFrame {
         bangxephangLayout.setHorizontalGroup(
             bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bangxephangLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bangxephangLayout.createSequentialGroup()
                         .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(bangxephangLayout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(b4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lb_Top4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(21, 21, 21)
+                                .addComponent(b2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(bangxephangLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lb_Top4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lb_Top2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(bangxephangLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lb_Top3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(9, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
+                                .addGap(113, 113, 113)
+                                .addComponent(lb_Top2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(b1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(bangxephangLayout.createSequentialGroup()
+                                .addComponent(lb_Top3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(b3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(36, 36, 36))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(165, 165, 165))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
-                        .addComponent(lb_Top1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(165, 165, 165))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bangxephangLayout.createSequentialGroup()
+                                .addComponent(lb_Top1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))))
         );
         bangxephangLayout.setVerticalGroup(
             bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,19 +247,19 @@ public class frmtrangchu extends javax.swing.JFrame {
                 .addComponent(lb_Top1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(bangxephangLayout.createSequentialGroup()
-                        .addComponent(lb_Top2)
+                        .addComponent(lb_Top2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(bangxephangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(b2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lb_Top4))
-                            .addComponent(jLabel3)))
+                            .addComponent(b4)))
                     .addGroup(bangxephangLayout.createSequentialGroup()
                         .addComponent(lb_Top3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(b3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -386,16 +394,16 @@ public class frmtrangchu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel b1;
+    private javax.swing.JLabel b2;
+    private javax.swing.JLabel b3;
+    private javax.swing.JLabel b4;
     private javax.swing.JPanel bangxephang;
     private javax.swing.JButton btn_Login;
     private javax.swing.JButton btn_Logout;
     private javax.swing.JButton btn_history;
     private javax.swing.JButton btn_startgame;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lb_Top1;
     private javax.swing.JLabel lb_Top2;
     private javax.swing.JLabel lb_Top3;

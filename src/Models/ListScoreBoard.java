@@ -130,5 +130,29 @@ public class ListScoreBoard {
 
         return top4.toString();
     }
+    
+    public String getDiemTop4() {
+        List<ScoreBoard> scArr = LayDanhSachDiem();
+        Set<String> uniqueUsernames = new HashSet<>();
+        StringBuilder top4 = new StringBuilder();
 
+        for (ScoreBoard score : scArr) {
+            // Nếu username chưa có trong Set, thêm nó vào
+            if (uniqueUsernames.add(score.getUsername())) {
+                top4.append(score.getScore()).append("@");
+            }
+
+            // Dừng vòng lặp khi đủ 4 phần tử
+            if (uniqueUsernames.size() == 4) {
+                break;
+            }
+        }
+
+        // Xóa ký tự "@" cuối cùng nếu tồn tại
+        if (top4.length() > 0) {
+            top4.deleteCharAt(top4.length() - 1);
+        }
+
+        return top4.toString();
+    }
 }

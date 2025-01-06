@@ -131,9 +131,9 @@ public class ServerUI extends JFrame {
                 loadQuestionsFromFile("../test2/src/RoundQuestions/SecondRound/Questions.txt", questions_round2);
                 loadQuestionsFromFile("../test2/src/RoundQuestions/ThirdRound/Questions.txt", "QuestionRound3");
                 //load question round 1,2,3
-                loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI1/Questions.txt", "GOI1");
-                loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI2/Questions.txt", "GOI2");
-                loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI3/Questions.txt", "GOI3");
+                loadQuestionsFromFile("../test2/src/RoundQuestions/FouthRound/GOI1/Questions.txt", "GOI1");
+                loadQuestionsFromFile("../test2/src/RoundQuestions/FouthRound/GOI2/Questions.txt", "GOI2");
+                loadQuestionsFromFile("../test2/src/RoundQuestions/FouthRound/GOI3/Questions.txt", "GOI3");
                 // Chấp nhận kết nối từ client
                 while (isRunning) {
                     Socket socket = serverSocket.accept();
@@ -274,7 +274,7 @@ public class ServerUI extends JFrame {
         waitingQueue.add(client);
         updateWaitingRoom();
 
-        if (waitingQueue.size() >= 2) { // Chờ đủ 4 người chơi
+        if (waitingQueue.size() >= 1) { // Chờ đủ 4 người chơi
             new Thread(() -> {
                 try {
                     // Đếm ngược 10 giây
@@ -285,7 +285,7 @@ public class ServerUI extends JFrame {
 
                     // Lấy 4 người chơi từ phòng chờ
                     List<ClientHandler> players = new ArrayList<>();
-                    for (int i = 0; i < 2; i++) {
+                    for (int i = 0; i < 1; i++) {
                         players.add(waitingQueue.poll());
                     }
 
@@ -460,7 +460,7 @@ public class ServerUI extends JFrame {
                             goiCauHoiChoosed.add(item);
                         }
                     } else if (command.startsWith("START_FOUTHROUND")) {
-                        for (var user : currentscoreBoard){
+                        for (var user : currentscoreBoard) {
                             user.setAnswered(false);
                         }
                         // Duyệt qua tất cả các câu hỏi
@@ -504,7 +504,7 @@ public class ServerUI extends JFrame {
                         out.println("DONE");
                         appendToLog("All questions completed");
                     } else if (command.startsWith("START_SECONDROUND")) {
-                        for (var user : currentscoreBoard){
+                        for (var user : currentscoreBoard) {
                             user.setAnswered(false);
                         }
                         for (var item : questions_round2) {
@@ -581,7 +581,7 @@ public class ServerUI extends JFrame {
                         appendToLog("All questions completed");
                     } else if (command.startsWith("START_THIRDROUND")) {
                         // Duyệt qua tất cả các câu hỏi
-                        for (var user : currentscoreBoard){
+                        for (var user : currentscoreBoard) {
                             user.setAnswered(false);
                         }
                         for (var item : questions_round3) {
@@ -644,18 +644,25 @@ public class ServerUI extends JFrame {
                         }
                     } else if (command.equals("RANK")) {
                         String rank = "RANK@" + diem.getTop4();
+                        String diemtop4 = "DIEM@" + diem.getDiemTop4();
                         out.println(rank);
+                        out.println(diemtop4);
                     } else if (command.equals("RANKLOCAL")) {
                         StringBuilder rank = new StringBuilder();
                         // Sắp xếp danh sách giảm dần theo điểm
+                        StringBuilder diem = new StringBuilder();
                         rank.append("RANK@");
+                        diem.append("DIEM@");
                         currentscoreBoard.sort((s1, s2) -> Integer.compare(s2.getScore(), s1.getScore()));
                         // In danh sách đã sắp xếp
                         for (ScoreBoard sb : currentscoreBoard) {
                             rank.append(sb.getUsername()).append("@");
+                            diem.append(sb.getScore()).append("@");
                         }
                         appendToLog(rank.toString());
+                        appendToLog(diem.toString());
                         out.println(rank.toString());
+                        out.println(diem.toString());
                     } else if (command.startsWith("ALLDONE")) {
                         currentscoreBoard.clear();
                     } else {
@@ -691,11 +698,12 @@ public class ServerUI extends JFrame {
                 }
             }
             if (allAnswered) {
-//                // Gửi NEXTROUND cho tất cả client
-                for (ClientHandler client : clients) {
-                    client.sendMessage("NEXTROUND");
+                int startIndex = Math.max(clients.size() - 4, 0);
+
+                for (int i = startIndex; i < clients.size(); i++) {
+                    clients.get(i).sendMessage("NEXTROUND");
                 }
-//                    out.println("NEXTROUND");
+
             }
         }
 
