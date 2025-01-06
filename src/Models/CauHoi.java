@@ -9,14 +9,12 @@ public class CauHoi {
     private String CauHoi;
     private String DapAn;
     private String DapAnDung;
-    private String roundid;
 
-    public CauHoi(String LinkVideo, String CauHoi, String DapAn, String DapAnDung, String roundid) {
+    public CauHoi(String LinkVideo, String CauHoi, String DapAn, String DapAnDung) {
         this.LinkVideo = LinkVideo;
         this.CauHoi = CauHoi;
         this.DapAn = DapAn;
         this.DapAnDung = DapAnDung;
-        this.roundid = roundid;
     }
 
     public CauHoi() {
@@ -36,9 +34,5 @@ public class CauHoi {
 
     public String getDapAnDung() {
         return DapAnDung;
-    }
-
-    public String getRoundid() {
-        return roundid;
     }
 }

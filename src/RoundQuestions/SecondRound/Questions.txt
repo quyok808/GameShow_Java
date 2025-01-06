@@ -1,0 +1,10 @@
+Chủ đề Lịch sử: Ai là người đã lãnh đạo cuộc khởi nghĩa Hai Bà Trưng vào năm 40?|Hai Bà Trưng@Lý Thường Kiệt@Nguyễn Trãi@Trần Hưng Đạo|Hai Bà Trưng
+Chủ đề Địa lý: Quốc gia nào có diện tích lớn nhất thế giới?|Nga@Canada@Mỹ@Trung Quốc|Nga
+Chủ đề Toán học: Số nguyên tố nhỏ nhất là số nào?|2@1@3@4|2
+Chủ đề Văn học: Tác phẩm "Truyện Kiều" của Nguyễn Du gồm bao nhiêu câu thơ?|4000@3000@3500@3254|3254
+Chủ đề Khoa học Tự nhiên: Đơn vị đo cường độ dòng điện trong hệ SI là gì?|Ampe@Volt@Ohm@Watt|Ampe
+Chủ đề Nghệ thuật: "Mona Lisa" là tác phẩm của họa sĩ nổi tiếng nào?|Vincent van Gogh@Leonardo da Vinci@Pablo Picasso@Claude Monet|Leonardo da Vinci
+Chủ đề Âm nhạc: "Nhạc trưởng vĩ đại" là biệt danh của ai?|Chopin@Mozart@Beethoven@Bach|Beethoven
+Chủ đề Sinh học: Loài động vật nào là loài có não bộ phát triển nhất trong các loài động vật trên trái đất?|Con người@Khỉ@Dolphin@Cá mập|Con người
+Chủ đề Vật lý: Chất nào là chất dẫn điện tốt nhất trong tự nhiên?|Nhôm@Vàng@Đồng@Bạc|Bạc
+Chủ đề Công nghệ: Từ viết tắt "HTTP" trong "URL" là viết tắt của từ gì?|HyperText Transmission Protocol@HyperText Transaction Protocol@HyperText Transmission Protocol@High Transfer Text Protocol|HyperText Transmission Protocol

@@ -10,7 +10,8 @@ import javax.swing.JOptionPane;
  * NGUYEN THI HONG VI
  */
 public class frmTaoUser extends javax.swing.JFrame {
-
+private static final int PORT = 12345;
+    private static final String HOST = "25.33.107.197";
     private boolean showPassword = false;
 
     /**
@@ -144,7 +145,7 @@ public class frmTaoUser extends javax.swing.JFrame {
             }
 
             // Kết nối tới server
-            try (Socket socket = new Socket("127.0.0.1", 12345); PrintWriter out = new PrintWriter(socket.getOutputStream(), true); BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            try (Socket socket = new Socket(HOST, PORT); PrintWriter out = new PrintWriter(socket.getOutputStream(), true); BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
                 // Gửi lệnh đăng ký tới server
                 String command = "REGISTER " + ten + " " + matKhau;

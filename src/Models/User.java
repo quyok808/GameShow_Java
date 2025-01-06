@@ -13,10 +13,12 @@ import java.io.Serializable;
  */
 public class User implements Serializable
 {
+    private int id;
     private String ten;
     private String matKhau;
    
-    public User(String ten, String matKhau) {
+    public User(int id, String ten, String matKhau) {
+        this.id = id;
         this.ten = ten;
         this.matKhau = matKhau;
     }
@@ -30,5 +32,13 @@ public class User implements Serializable
     
     public boolean laPass(String matKhau){
         return matKhau.equals(this.matKhau);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return ten;
     }
 }

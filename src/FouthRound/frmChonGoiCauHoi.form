@@ -31,6 +31,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btn_Start" alignment="1" max="32767" attributes="0"/>
+                  <Component id="label_Score" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="Radiobtn_GOI1" min="-2" pref="201" max="-2" attributes="0"/>
@@ -39,7 +40,7 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="label_Score" alignment="0" max="32767" attributes="0"/>
+                  <Component id="lb_info" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -49,7 +50,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="label_Score" min="-2" pref="145" max="-2" attributes="0"/>
+              <Component id="lb_info" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="label_Score" min="-2" pref="123" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="Radiobtn_GOI1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
@@ -57,7 +60,7 @@
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Component id="Radiobtn_GOI3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btn_Start" pref="57" max="32767" attributes="0"/>
+              <Component id="btn_Start" pref="58" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -120,6 +123,14 @@
             <LineBorder roundedCorners="true"/>
           </Border>
         </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lb_info">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Serif" size="12" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Th&#xed; sinh: ABC"/>
       </Properties>
     </Component>
   </SubComponents>

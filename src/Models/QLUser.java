@@ -16,28 +16,33 @@ public class QLUser {
         usArrL = LayDanhSachUser();
     }
 
-    private ArrayList<User> LayDanhSachUser() {
+    public ArrayList<User> LayDanhSachUser() {
         ArrayList<User> usArr = new ArrayList<>();
         try {
             DBAccess access = new DBAccess();
             ResultSet rs = access.Query("SELECT * FROM users");
             while (rs.next()){
+                int id = rs.getInt("id");
                 String ten = rs.getString("username");
                 String pass = rs.getString("password");
                 
-                User user = new User(ten,pass);
+                User user = new User(id,ten,pass);
                 usArr.add(user);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-        } 
+        }
         return usArr;
     }
     
     public User TimKiem(String ten){
-        if (ten.isEmpty()){
+        usArrL = LayDanhSachUser();
+        if (!ten.isEmpty()){
+            
             for (User us : usArrL){
-                return us;
+                if (us.getUsername().equals(ten)){
+                    return us;
+                }
             }
         } 
         return null;

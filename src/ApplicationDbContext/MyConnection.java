@@ -26,7 +26,7 @@ public class MyConnection {
            return conn;
         }    
         catch(Exception ex){
-            JOptionPane.showMessageDialog(null, ex.toString(), "Loi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Không thể kết nối tới cơ sở dữ liệu !!!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return null;
         }
    }

@@ -1,7 +1,6 @@
 package Home;
 
 import FirstRound.frmVong1;
-import FouthRound.frmChonGoiCauHoi;
 import javax.swing.*;
 import java.io.*;
 import static java.lang.Thread.sleep;
@@ -14,7 +13,8 @@ import java.util.logging.Logger;
  * NGUYEN THI HONG VI
  */
 public class frmphongcho extends javax.swing.JFrame {
-
+private static final int PORT = 12345;
+    private static final String HOST = "25.33.107.197";
     private boolean isPair = true;
     private PrintWriter out;
     private BufferedReader in;
@@ -37,7 +37,7 @@ public class frmphongcho extends javax.swing.JFrame {
 
     private void connectToServer() {
         try {
-            socket = new Socket("localhost", 12345);
+            socket = new Socket(HOST, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -75,6 +75,7 @@ public class frmphongcho extends javax.swing.JFrame {
                 if (timer != null && timer.isRunning()) {
                     timer.stop(); // Dừng đếm thời gian
                 }
+                btn_Cancel.setEnabled(false);
             } else {
                 txt_Status.append(message + "\n");
             }
@@ -92,7 +93,7 @@ public class frmphongcho extends javax.swing.JFrame {
     }
 
     private void switchToClient() {
-        frmChonGoiCauHoi obj = new frmChonGoiCauHoi();
+        frmVong1 obj = new frmVong1(playerName);
         obj.setVisible(true);
         this.dispose();
     }

@@ -1,11 +1,12 @@
 package FouthRound;
 
-import Models.ListScoreBoard;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -14,30 +15,43 @@ import javax.swing.SwingUtilities;
  */
 public class frmChonGoiCauHoi extends javax.swing.JFrame {
 
+    private static final int PORT = 12345;
+    private static final String HOST = "25.33.107.197";
     private PrintWriter out;
     private BufferedReader in;
     private Socket socket;
+    private String PlayerName;
+    private String nameGoiCauHoi;
 
-    public frmChonGoiCauHoi(ListScoreBoard scoreboard, int diem) {
-        initComponents();
-        label_Score.setText(diem + "");
-        connectToServer();
-    }
-
-    /**
-     * Creates new form frmChonGoiCauHoi
-     */
     public frmChonGoiCauHoi() {
         initComponents();
         connectToServer();
     }
 
+    public frmChonGoiCauHoi(String PlayerName) {
+        initComponents();
+
+        this.PlayerName = PlayerName;
+        lb_info.setText("Thí sinh: " + this.PlayerName);
+        try {
+            this.socket = new Socket(HOST, PORT);
+            connectToServer();
+            sendToServer("DIEM@" + this.PlayerName);
+            System.out.println("DIEM@" + this.PlayerName);
+        } catch (IOException ex) {
+            Logger.getLogger(frmChonGoiCauHoi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    /**
+     * Creates new form frmChonGoiCauHoi
+     */
     private void connectToServer() {
         try {
-            socket = new Socket("localhost", 12345);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("Da connect");
+
             // Tạo luồng đọc từ server
             new Thread(this::readMessagesFromServer).start();
         } catch (IOException e) {
@@ -51,7 +65,6 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
             String message;
             while ((message = in.readLine()) != null) {
                 processServerMessage(message);
-                System.out.println(message);
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Connection lost: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -60,16 +73,12 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
 
     private void processServerMessage(String message) {
         SwingUtilities.invokeLater(() -> {
-            if (message.startsWith("LOADING")) {
-                String kq = message.substring(8);
-                System.out.println(kq);
-                if (kq.equals("1")) {
-                    frmVong4 obj = new frmVong4();
-                    obj.setVisible(true);
-                    this.dispose();
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi load câu hỏi !!!");
+            if (message.startsWith("DIEM")) {
+                String[] parts = message.split("@", 3);
+                if (parts.length == 3) {
+                    if (this.PlayerName.equals(parts[1])) {
+                        label_Score.setText(parts[2] + "");
+                    }
                 }
             }
         });
@@ -96,6 +105,7 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
         Radiobtn_GOI3 = new javax.swing.JRadioButton();
         btn_Start = new javax.swing.JButton();
         label_Score = new javax.swing.JLabel();
+        lb_info = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -124,32 +134,34 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
         label_Score.setText("140");
         label_Score.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        lb_info.setFont(new java.awt.Font("DejaVu Serif", 0, 12)); // NOI18N
+        lb_info.setText("Thí sinh: ABC");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btn_Start, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(label_Score, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Radiobtn_GOI1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Radiobtn_GOI2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Radiobtn_GOI3, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(label_Score, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(lb_info, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label_Score, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lb_info)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label_Score, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Radiobtn_GOI1)
                 .addGap(18, 18, 18)
@@ -157,7 +169,7 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(Radiobtn_GOI3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -167,11 +179,13 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
 
     private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
         String goiCauHoi = getOption();
-        System.out.println(goiCauHoi);
         if (goiCauHoi.isEmpty()) {
             return;
         }
         sendToServer(goiCauHoi);
+        frmVong4 obj = new frmVong4(nameGoiCauHoi, PlayerName);
+        obj.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_StartActionPerformed
 
     /**
@@ -217,16 +231,20 @@ public class frmChonGoiCauHoi extends javax.swing.JFrame {
     private javax.swing.JButton btn_Start;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel label_Score;
+    private javax.swing.JLabel lb_info;
     // End of variables declaration//GEN-END:variables
 
     private String getOption() {
         String selectedOption = "";
         if (Radiobtn_GOI1.isSelected()) {
-            selectedOption = "GOI 1";
+            selectedOption = "GOI1";
+            nameGoiCauHoi = "Gói câu hỏi 30 điểm";
         } else if (Radiobtn_GOI2.isSelected()) {
-            selectedOption = "GOI 2";
+            selectedOption = "GOI2";
+            nameGoiCauHoi = "Gói câu hỏi 60 điểm";
         } else if (Radiobtn_GOI3.isSelected()) {
-            selectedOption = "GOI 3";
+            selectedOption = "GOI3";
+            nameGoiCauHoi = "Gói câu hỏi 90 điểm";
         }
         return selectedOption;
     }

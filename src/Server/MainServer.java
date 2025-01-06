@@ -5,13 +5,17 @@ package Server;
  * NGUYEN MINH TRI - NGUYEN XUAN HUY - PHAN VU BANG
  */
 import ApplicationDbContext.*;
+import Models.CauHoi;
+import Models.ListScoreBoard;
+import Models.QLUser;
+import Models.ScoreBoard;
+import Models.User;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JOptionPane;
 
@@ -20,16 +24,32 @@ public class MainServer {
     private static final int PORT = 12345;
     private static final List<ClientHandler> clients = new ArrayList<>();
     private static final Queue<ClientHandler> waitingQueue = new ConcurrentLinkedQueue<>();
-    private static final List<String[]> questions_round1 = new ArrayList<>();
-    private static final List<String[]> questions_round2 = new ArrayList<>();
-    private static final List<String[]> questions_round3 = new ArrayList<>();
-    private static final List<String[]> questions_round4 = new ArrayList<>();
+    private static final List<CauHoi> questions_round1 = new ArrayList<>();
+    private static final List<CauHoi> questions_round2 = new ArrayList<>();
+    private static final List<CauHoi> questions_round3 = new ArrayList<>();
+    private static final List<CauHoi> questions_round4_GOI1 = new ArrayList<>();
+    private static final List<CauHoi> questions_round4_GOI2 = new ArrayList<>();
+    private static final List<CauHoi> questions_round4_GOI3 = new ArrayList<>();
+    private static final List<CauHoi> goiCauHoiChoosed = new ArrayList<>();
+    private static QLUser ql;
+    private static ListScoreBoard diem;
+    private static List<ScoreBoard> currentscoreBoard = new ArrayList<>();
+    private static DBAccess access = new DBAccess();
 
     public static void main(String[] args) throws IOException {
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Server is running on port " + PORT + "...");
 
+            ql = new QLUser();
+            diem = new ListScoreBoard();
+            loadQuestionsFromFile("../test2/src/RoundQuestions/FirstRound/Questions.txt", questions_round1);
+            loadQuestionsFromFile("../test2/src/RoundQuestions/SecondRound/Questions.txt", questions_round2);
+            loadQuestionsFromFile("../test2/src/RoundQuestions/ThirdRound/Questions.txt", "QuestionRound3");
+            //load question round 1,2,3
+            loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI1/Questions.txt", "GOI1");
+            loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI2/Questions.txt", "GOI2");
+            loadQuestionsFromFile("F:/IT/1-DA_LTMMT/Code_Temp/test2/src/RoundQuestions/FouthRound/GOI3/Questions.txt", "GOI3");
             // Chấp nhận kết nối từ client
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -43,27 +63,80 @@ public class MainServer {
         }
     }
 
-    private static int loadQuestionsFromFile(String fileName) {
+    private static void loadQuestionsFromFile(String fileName, List<CauHoi> questionround) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|"); // Tách dữ liệu theo dấu "|"
+                if (parts.length == 3) {
+                    String question = parts[0];
+                    String answer = parts[1];
+                    String correctAnswer = parts[2];
+
+                    CauHoi newCauHoi = new CauHoi("", question, answer, correctAnswer);
+                    questionround.add(newCauHoi);
+                } else {
+                    System.out.println("Invalid data format in line: " + line);
+                }
+            }
+            System.out.println("Questions loaded: " + questionround.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadQuestionsFromFile(String fileName, String GoiCauHoi) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|"); // Tách dữ liệu theo dấu "|"
                 if (parts.length == 3) {
                     String videoPath = parts[0];
-                    String question = parts[1].substring(2); // Bỏ qua "Q." ở đầu câu hỏi
-                    String answer = parts[2].substring(5); // Bỏ qua "Ans." ở đầu câu trả lời
-                    System.out.println("Video Path: " + videoPath);
-                    System.out.println("Question: " + question);
-                    System.out.println("Answer: " + answer);
-                    return 1;
+                    String question = parts[1]; // Bỏ qua "Q." ở đầu câu hỏi
+                    String correctAnswer = parts[2]; // Bỏ qua "Ans." ở đầu câu trả lời
+
+                    CauHoi newCauHoi = new CauHoi(videoPath, question, "", correctAnswer);
+                    switch (GoiCauHoi) {
+                        case "GOI1":
+                            questions_round4_GOI1.add(newCauHoi);
+                            break;
+                        case "GOI2":
+                            questions_round4_GOI2.add(newCauHoi);
+                            break;
+                        case "GOI3":
+                            questions_round4_GOI3.add(newCauHoi);
+                            break;
+                        case "QuestionRound3":
+                            questions_round3.add(newCauHoi);
+                            break;
+                        default:
+
+                            throw new AssertionError();
+                    }
                 } else {
                     System.out.println("Invalid data format in line: " + line);
                 }
             }
+            switch (GoiCauHoi) {
+                case "GOI1":
+                    System.out.println("Questions GOI1 loaded: " + questions_round4_GOI1.size());
+                    break;
+                case "GOI2":
+                    System.out.println("Questions GOI2 loaded: " + questions_round4_GOI2.size());
+                    break;
+                case "GOI3":
+                    System.out.println("Questions GOI3 loaded: " + questions_round4_GOI3.size());
+                    break;
+                case "QuestionRound3":
+                    System.out.println("Questions round 3 loaded: " + questions_round3.size());
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
     }
 
     private synchronized static void updateWaitingRoom() {
@@ -84,7 +157,7 @@ public class MainServer {
         waitingQueue.add(client);
         updateWaitingRoom();
 
-        if (waitingQueue.size() >= 4) { // Chờ đủ 4 người chơi
+        if (waitingQueue.size() >= 2) { // Chờ đủ 4 người chơi
             new Thread(() -> {
                 try {
                     // Đếm ngược 10 giây
@@ -95,17 +168,8 @@ public class MainServer {
 
                     // Lấy 4 người chơi từ phòng chờ
                     List<ClientHandler> players = new ArrayList<>();
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i < 2; i++) {
                         players.add(waitingQueue.poll());
-                    }
-
-                    // Kiểm tra xem có đủ 4 người chơi không
-                    if (players.size() < 4) {
-                        // Nếu không đủ người chơi, thông báo lỗi và kết thúc trò chơi
-                        for (ClientHandler player : players) {
-                            player.sendMessage("Not enough players, game cannot start.");
-                        }
-                        return;
                     }
 
                     // Xác nhận tất cả người chơi đã ghép cặp
@@ -115,6 +179,7 @@ public class MainServer {
                             if (player != teammate) {
                                 player.sendMessage("- " + teammate.getPlayerName());
                             }
+
                         }
                     }
 
@@ -128,104 +193,19 @@ public class MainServer {
         }
     }
 
-    private static void sendQuestion(ClientHandler client, String[] questionData) throws IOException {
-        client.sendMessage("Question:" + questionData[0]);
-        client.sendMessage(questionData[1]);
-    }
-
-    private static void evaluateAnswer(ClientHandler client, String answer, String correctAnswer) {
-        if (answer != null && answer.contains(correctAnswer)) {
-            //Lưu điểm
-            client.increaseScore();
-            client.sendMessage("Correct!");
-        } else {
-            client.sendMessage("Wrong! The correct answer is " + correctAnswer + ".");
-        }
-    }
-
     private static void startGame(List<ClientHandler> players) {
         new Thread(() -> {
             // Trò chơi bắt đầu
             // Ví dụ ở đây có thể chỉ đơn giản là thông báo rằng trò chơi đã bắt đầu mà không cần câu hỏi
             for (ClientHandler player : players) {
+                User user = ql.TimKiem(player.getPlayerName());
+                int id = LocalDateTime.now().getNano();
+                ScoreBoard newRecord = new ScoreBoard(id, user.getId(), user.getUsername(), 0);
+                diem.addNewPlayer(newRecord);
+                currentscoreBoard.add(newRecord);
                 player.sendMessage("Game started! Good luck!");
             }
         }).start();
-    }
-
-    private static void sendQuestionsForRound(List<ClientHandler> players, List<String[]> questions) throws InterruptedException, IOException {
-        for (int i = 0; i < questions.size(); i++) {
-            String[] questionData = questions.get(i); // Lấy câu hỏi hiện tại
-
-            // Gửi câu hỏi cho tất cả các player
-            for (ClientHandler player : players) {
-                sendQuestion(player, questionData); // Gửi câu hỏi
-            }
-
-            // Đợi nhận câu trả lời từ tất cả người chơi
-            for (ClientHandler player : players) {
-                String answer = player.in.readLine(); // Đọc câu trả lời từ client
-                evaluateAnswer(player, answer, questionData[2]); // Đánh giá câu trả lời
-            }
-
-            // Nghỉ 2 giây trước khi gửi câu hỏi tiếp theo
-            Thread.sleep(2000);
-        }
-    }
-
-    private static void Round4() {
-        new Thread(() -> {
-            try {
-                List<ClientHandler> players = new ArrayList<>(waitingQueue); // Lấy danh sách người chơi từ hàng đợi
-                if (players.size() < 4) {
-                    for (ClientHandler player : players) {
-                        player.sendMessage("Not enough players for Round 4. Please wait.");
-                    }
-                    return;
-                }
-
-                // Giới hạn số lượng người chơi là 4
-                players = players.subList(0, 4);
-                for (ClientHandler player : players) {
-                    waitingQueue.remove(player);
-                }
-
-                // Bắt đầu vòng 4
-                for (ClientHandler player : players) {
-                    player.sendMessage("Round 4 is starting!");
-                }
-                System.out.println("Questions in Round 4: " + questions_round4);
-
-                // Gửi các câu hỏi vòng 4
-                sendQuestionsForRound(players, questions_round4);
-
-                // Kết thúc vòng chơi
-                for (ClientHandler player : players) {
-                    player.sendMessage("Round 4 has ended. Your final score: " + player.getScore());
-                }
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    // Phương thức giả để load câu hỏi dựa trên gói câu hỏi
-    private static String loadQuestions(String goiCauHoi) {
-        // Giả sử đây là logic để load câu hỏi từ cơ sở dữ liệu hoặc nguồn dữ liệu
-        if (goiCauHoi.equals("GOI 1")) {
-            int kq = loadQuestionsFromFile("../test2/src/RoundQuestions/FouthRound/GOI1/Questions.txt");
-            if (kq == 1) {
-                return "1"; // Thành công
-            }
-        } else if (goiCauHoi.equals("GOI 2")) {
-            // Load câu hỏi cho gói 2
-            return "1"; // Thành công
-        } else if (goiCauHoi.equals("GOI 3")) {
-            // Load câu hỏi cho gói 3
-            return "1"; // Thành công
-        }
-        return "0"; // Lỗi khi load câu hỏi
-
     }
 
 //============================================================================================================
@@ -236,7 +216,7 @@ public class MainServer {
         private final PrintWriter out;
         private final BufferedReader in;
         private String playerName;
-        private int score = 0; // Điểm số của người chơi
+        private int score_per_Question = 0;
 
         public void sendMessage(String message) {
             out.println(message);
@@ -250,16 +230,16 @@ public class MainServer {
             this.playerName = playerName;
         }
 
-        public int getScore() {
-            return score;
-        }
-
-        public void increaseScore() {
-            score += 1; // Tăng điểm
-        }
-
         public String readAnswer() throws IOException {
             return in.readLine(); // Đọc câu trả lời từ client
+        }
+
+        public int getScore_per_Question() {
+            return score_per_Question;
+        }
+
+        public void setScore_per_Question(int score_per_Question) {
+            this.score_per_Question = score_per_Question;
         }
 
         public ClientHandler(Socket socket) throws IOException {
@@ -338,14 +318,208 @@ public class MainServer {
                         pairClients(this);
                     } else if ("Unpair".equalsIgnoreCase(command)) {
                         cleanup();
-                    } else if (command.equals("GOI 1") || command.equals("GOI 2") || command.equals("GOI 3")) {
-                        // Xử lý gói câu hỏi
-                        System.out.println("Player chose " + command);
-                        // Thực hiện logic để load câu hỏi và gửi về client
-                        String result = loadQuestions(command);
-                        out.println("LOADING " + result);
+                    } else if (command.startsWith("GOI1")) {
+                        goiCauHoiChoosed.clear();
+                        setScore_per_Question(10);
+                        for (var item : questions_round4_GOI1) {
+                            goiCauHoiChoosed.add(item);
+                        }
+                    } else if (command.startsWith("GOI2")) {
+                        goiCauHoiChoosed.clear();
+                        setScore_per_Question(20);
+                        for (var item : questions_round4_GOI2) {
+                            goiCauHoiChoosed.add(item);
+                        }
+                    } else if (command.startsWith("GOI3")) {
+                        goiCauHoiChoosed.clear();
+                        setScore_per_Question(30);
+                        for (var item : questions_round4_GOI3) {
+                            goiCauHoiChoosed.add(item);
+                        }
                     } else if (command.startsWith("START_FOUTHROUND")) {
-                        Round4();
+                        // Duyệt qua tất cả các câu hỏi
+                        for (var item : goiCauHoiChoosed) {
+                            try {
+                                // Gửi câu hỏi tới client
+                                String question = "Question@" + item.getLinkVideo() + "@" + item.getCauHoi();
+                                out.println(question);
+                                System.out.println("Sent: " + question);
+
+                                // Đặt thời gian chờ phản hồi từ client
+                                socket.setSoTimeout(40000); // 40 giây  
+
+                                String answer = in.readLine();
+
+                                // Kiểm tra câu trả lời từ client
+                                if (answer == null) {
+                                    System.out.println("No answer from client.");
+                                    out.println("NO_ANSWER");
+                                } else if (answer.trim().isEmpty()) {
+                                    System.out.println("null answer.");
+                                    out.println("INVALID_ANSWER");
+                                } else {
+                                    System.out.println("Received answer: " + answer);
+                                    out.println("ANSWER_RECEIVED");
+                                    // Xử lý logic với câu trả lời (nếu cần)
+                                    processAnswer1(answer.substring(7), item);
+                                }
+
+                            } catch (SocketTimeoutException e) {
+                                System.out.println("time out");
+                                out.println("TIMEOUT");
+                                // Chuyển sang câu hỏi tiếp theo
+                            } catch (IOException e) {
+                                System.out.println("error: " + e.getMessage());
+                                out.println("ERROR");
+                            }
+                        }
+                        socket.setSoTimeout(0);
+                        // Khi đã hết câu hỏi, gửi "DONE" và hiển thị thông báo kết thúc
+                        out.println("DONE");
+                        System.out.println("All questions completed");
+                    } else if (command.startsWith("START_SECONDROUND")) {
+                        for (var item : questions_round2) {
+                            try {
+                                String question = "Question@" + item.getCauHoi() + "@" + item.getDapAn();
+                                out.println(question);
+                                System.out.println("Sent: " + question);// Đặt thời gian chờ phản hồi từ client
+                                socket.setSoTimeout(10000); // 40 giây  
+
+                                String answer = in.readLine();
+
+                                // Kiểm tra câu trả lời từ client
+                                if (answer == null) {
+                                    System.out.println("No answer from client.");
+                                    out.println("NO_ANSWER");
+                                } else if (answer.trim().isEmpty()) {
+                                    System.out.println("null answer.");
+                                    out.println("INVALID_ANSWER");
+                                } else {
+                                    System.out.println("Received answer: " + answer);
+                                    out.println("ANSWER_RECEIVED");
+                                    // Xử lý logic với câu trả lời (nếu cần)
+                                    processAnswer1(answer.substring(7), item);
+                                }
+                            } catch (SocketTimeoutException e) {
+                                System.out.println("time out");
+                                out.println("TIMEOUT");
+                                // Chuyển sang câu hỏi tiếp theo
+                                continue;
+                            } catch (IOException e) {
+                                System.out.println("error: " + e.getMessage());
+                                out.println("ERROR");
+                            }
+                        }
+                        socket.setSoTimeout(0);
+                        // Khi đã hết câu hỏi, gửi "DONE" và hiển thị thông báo kết thúc
+                        out.println("DONE");
+                        System.out.println("All questions completed");
+                    } else if (command.startsWith("START_FIRSTROUND")) {
+                        for (var item : questions_round1) {
+                            try {
+                                String question = "Question@" + item.getCauHoi() + "@" + item.getDapAn();
+                                out.println(question);
+                                System.out.println("Sent: " + question);// Đặt thời gian chờ phản hồi từ client
+                                socket.setSoTimeout(10000); // 40 giây  
+
+                                String answer = in.readLine();
+
+                                // Kiểm tra câu trả lời từ client
+                                if (answer == null) {
+                                    System.out.println("No answer from client.");
+                                    out.println("NO_ANSWER");
+                                } else if (answer.trim().isEmpty()) {
+                                    System.out.println("null answer.");
+                                    out.println("INVALID_ANSWER");
+                                } else {
+                                    System.out.println("Received answer: " + answer);
+                                    out.println("ANSWER_RECEIVED");
+                                    // Xử lý logic với câu trả lời (nếu cần)
+                                    processAnswer(answer.substring(7), item);
+                                }
+                            } catch (SocketTimeoutException e) {
+                                System.out.println("time out");
+                                out.println("TIMEOUT");
+                                // Chuyển sang câu hỏi tiếp theo
+                                continue;
+                            } catch (IOException e) {
+                                System.out.println("error: " + e.getMessage());
+                                out.println("ERROR");
+                            }
+                        }
+                        socket.setSoTimeout(0);
+                        // Khi đã hết câu hỏi, gửi "DONE" và hiển thị thông báo kết thúc
+                        out.println("DONE");
+                        System.out.println("All questions completed");
+                    } else if (command.startsWith("START_THIRDROUND")) {
+                        // Duyệt qua tất cả các câu hỏi
+                        for (var item : questions_round3) {
+                            try {
+                                // Gửi câu hỏi tới client
+                                String question = "Question@" + item.getLinkVideo() + "@" + item.getCauHoi();
+                                out.println(question);
+                                System.out.println("Sent: " + question);
+
+                                // Đặt thời gian chờ phản hồi từ client
+                                socket.setSoTimeout(30000); // 40 giây  
+
+                                String answer = in.readLine();
+
+                                // Kiểm tra câu trả lời từ client
+                                if (answer == null) {
+                                    System.out.println("No answer from client.");
+                                    out.println("NO_ANSWER");
+                                } else if (answer.trim().isEmpty()) {
+                                    System.out.println("null answer.");
+                                    out.println("INVALID_ANSWER");
+                                } else {
+                                    System.out.println("Received answer: " + answer);
+                                    out.println("ANSWER_RECEIVED");
+                                    // Xử lý logic với câu trả lời (nếu cần)
+                                    processAnswer1(answer.substring(7), item);
+                                }
+
+                            } catch (SocketTimeoutException e) {
+                                System.out.println("time out");
+                                out.println("TIMEOUT");
+                                // Chuyển sang câu hỏi tiếp theo
+                            } catch (IOException e) {
+                                System.out.println("error: " + e.getMessage());
+                                out.println("ERROR");
+                            }
+                        }
+                        socket.setSoTimeout(0);
+                        // Khi đã hết câu hỏi, gửi "DONE" và hiển thị thông báo kết thúc
+                        out.println("DONE");
+                        System.out.println("All questions completed");
+                    } else if (command.startsWith("DIEM")) {
+                        String[] parts = command.split("@", 2);
+                        if (parts.length == 2) {
+                            String username = parts[1];
+                            // Đọc tên người chơi
+                            for (var user : currentscoreBoard) {
+                                if (user.getUsername().equals(username)) {
+                                    out.println("DIEM@" + user.getUsername() + "@" + user.getScore());
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (command.equals("RANK")) {
+                        String rank = "RANK@" + diem.getTop4();
+                        out.println(rank);
+                    } else if (command.equals("RANKLOCAL")) {
+                        StringBuilder rank = new StringBuilder();
+                        // Sắp xếp danh sách giảm dần theo điểm
+                        rank.append("RANK@");
+                        currentscoreBoard.sort((s1, s2) -> Integer.compare(s2.getScore(), s1.getScore()));
+                        // In danh sách đã sắp xếp
+                        for (ScoreBoard sb : currentscoreBoard) {
+                            rank.append(sb.getUsername()).append("@");
+                        }
+                        System.out.println(rank.toString());
+                        out.println(rank.toString());
+                    } else if (command.startsWith("ALLDONE")) {
+                        currentscoreBoard.clear();
                     } else {
                         out.println("UNKNOWN_COMMAND: " + command);
                     }
@@ -361,10 +535,83 @@ public class MainServer {
             }
         }
 
+        private void processAnswer1(String answer, CauHoi question) {
+            // Giả sử bạn kiểm tra xem câu trả lời có đúng hay không
+            String[] parts = answer.split("@", 3);
+            if (parts.length == 3) {
+                String playerNames = parts[0];
+                int diemso = Integer.parseInt(parts[1]);
+                String answerPlayer = parts[2];
+
+                if (answerPlayer.equalsIgnoreCase(question.getDapAnDung()) || answerPlayer.contains(question.getDapAnDung())) {
+                    for (var item : currentscoreBoard) {
+                        if (item.getUsername().equals(playerNames)) {
+                            int d = item.getScore() + diemso;
+                            item.setScore(d);
+                            diem.updateScore(item.getId(), item.getScore());
+                            out.println("CORRECT@" + playerNames + "@" + d);
+
+                            for (var diem : currentscoreBoard) {
+                                System.out.println(diem.getId() + " - " + diem.getScore());
+                            }
+                            break;
+                        }
+                    }
+                } else if (answer.equals("NEXTQUESTION")) {
+                    System.out.println("Next request");
+                } else {
+                    System.out.println("Incorrect: " + answer);
+                    for (var item : currentscoreBoard) {
+                        if (item.getUsername().equals(playerNames)) {
+                            int d = item.getScore() - (diemso / 2);
+                            item.setScore(d);
+                            diem.updateScore(item.getId(), item.getScore());
+                            out.println("INCORRECT@" + playerNames + "@" + d);
+
+                            for (var diem : currentscoreBoard) {
+                                System.out.println(diem.getId() + " - " + diem.getScore());
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void processAnswer(String answer, CauHoi question) {
+            // Giả sử bạn kiểm tra xem câu trả lời có đúng hay không
+            String[] parts = answer.split("@", 3);
+            if (parts.length == 3) {
+                String playerNames = parts[0];
+                int diemso = Integer.parseInt(parts[1]);
+                String answerPlayer = parts[2];
+
+                if (answerPlayer.equalsIgnoreCase(question.getDapAnDung()) || answerPlayer.contains(question.getDapAnDung())) {
+                    for (var item : currentscoreBoard) {
+                        if (item.getUsername().equals(playerNames)) {
+                            int d = item.getScore() + diemso;
+                            item.setScore(d);
+                            diem.updateScore(item.getId(), item.getScore());
+                            out.println("CORRECT@" + playerNames + "@" + d);
+
+                            for (var diem : currentscoreBoard) {
+                                System.out.println(diem.getId() + " - " + diem.getScore());
+                            }
+                            break;
+                        }
+                    }
+                } else if (answer.equals("NEXTQUESTION")) {
+                    System.out.println("Next request");
+                } else {
+                    System.out.println("Incorrect: " + answer);
+                    out.println("INCORRECT");
+                }
+            }
+        }
+
         private static void handleRegister(String username, String password, PrintWriter out) {
             try {
                 // Kết nối tới cơ sở dữ liệu
-                DBAccess access = new DBAccess();
                 var rs = access.Query("SELECT * FROM users WHERE username='" + username + "'");
 
                 if (rs.next()) {
@@ -391,8 +638,9 @@ public class MainServer {
 
         private static void handleLogin(String username, String password, PrintWriter out) {
             try {
-                DBAccess access = new DBAccess();
+
                 String hashedPassword = PasswordUtils.hashPassword(password);
+
                 var rs = access.Query("SELECT * FROM users WHERE username='" + username + "' AND password='" + hashedPassword + "'");
 
                 if (rs.next()) {
